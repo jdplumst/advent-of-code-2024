@@ -17,6 +17,6 @@ func main() {
 	case "1":
 		Day01(part)
 	default:
-		panic("Must run a valid day")
+		log.Fatal("Must run a valid day")
 	}
 }

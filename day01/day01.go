@@ -19,7 +19,7 @@ func Day01(part string) {
 		res := part2("./day01/input.txt")
 		fmt.Println("The result for day 1 part 1 is", res)
 	default:
-		panic("Must run either part 1 or part 2")
+		log.Fatal("Must run either part 1 or part 2")
 	}
 }
 
