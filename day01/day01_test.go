@@ -17,7 +17,7 @@ func TestPart1(t *testing.T) {
 		t.Run(test.Description, func(t *testing.T) {
 			got := part1(test.Input)
 			if got != test.Want {
-				t.Errorf("got %q, want %q", got, test.Want)
+				t.Errorf("got %v, want %v", got, test.Want)
 			}
 		})
 	}
