@@ -17,7 +17,7 @@ func Day01(part string) {
 		fmt.Println("The result for day 1 part 1 is", res)
 	case "2":
 		res := part2("./day01/input.txt")
-		fmt.Println("The result for day 1 part 1 is", res)
+		fmt.Println("The result for day 1 part 2 is", res)
 	default:
 		log.Fatal("Must run either part 1 or part 2")
 	}

@@ -8,12 +8,30 @@ func TestPart1(t *testing.T) {
 		Input       string
 		Want        int
 	}{
-		{"give", "input_test.txt", 2},
+		{"given", "input_test.txt", 2},
 	}
 
 	for _, test := range cases {
 		t.Run(test.Description, func(t *testing.T) {
 			got := part1(test.Input)
+			if got != test.Want {
+				t.Errorf("got %v, want %v", got, test.Want)
+			}
+		})
+	}
+}
+
+func TestPart2(t *testing.T) {
+	cases := []struct {
+		Description string
+		Input       string
+		Want        int
+	}{
+		{"given", "input_test.txt", 4},
+	}
+	for _, test := range cases {
+		t.Run(test.Description, func(t *testing.T) {
+			got := part2(test.Input)
 			if got != test.Want {
 				t.Errorf("got %v, want %v", got, test.Want)
 			}
