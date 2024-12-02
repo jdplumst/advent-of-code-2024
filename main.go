@@ -5,6 +5,7 @@ import (
 	"os"
 
 	. "github.com/jdplumst/advent-of-code-2024/day01"
+	. "github.com/jdplumst/advent-of-code-2024/day02"
 )
 
 func main() {
@@ -16,6 +17,8 @@ func main() {
 	switch day {
 	case "1":
 		Day01(part)
+	case "2":
+		Day02(part)
 	default:
 		log.Fatal("Must run a valid day")
 	}
