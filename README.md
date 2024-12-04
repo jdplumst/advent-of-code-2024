@@ -22,7 +22,7 @@ go run . 1 2
 
 ### Running Tests
 
-To run all tests for all days and parts, run the following in the terminal:
+To run all tests for all days and parts, add in test .txt files to each day's directory then run the following in the terminal:
 
 ```
 go test ./... -v
