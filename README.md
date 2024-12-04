@@ -6,7 +6,7 @@ This repository includes my Go code for [Advent of Code 2024](https://adventofco
 
 To run this code from the terminal, first clone this repository then move into the project's directory.
 
-Replace the input.txt files with your own input.txt files for each day.
+Add an input.txt in the day's directory.
 
 Then run the following code in the terminal:
 
