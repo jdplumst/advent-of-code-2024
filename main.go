@@ -8,6 +8,7 @@ import (
 	. "github.com/jdplumst/advent-of-code-2024/day02"
 	. "github.com/jdplumst/advent-of-code-2024/day03"
 	. "github.com/jdplumst/advent-of-code-2024/day04"
+	. "github.com/jdplumst/advent-of-code-2024/day05"
 )
 
 func main() {
@@ -25,6 +26,8 @@ func main() {
 		Day03(part)
 	case "4":
 		Day04(part)
+	case "5":
+		Day05(part)
 	default:
 		log.Fatal("Must run a valid day")
 	}
