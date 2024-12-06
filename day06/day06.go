@@ -263,5 +263,3 @@ func printGuardMap(guard_map [][]string) {
 	}
 	fmt.Println("-------------------------------")
 }
-
-// 1111 is too low
