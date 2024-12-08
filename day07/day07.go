@@ -55,7 +55,39 @@ func part1(input string) int {
 }
 
 func part2(input string) int {
-	return 2
+	file, err := os.Open(input)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	res := 0
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		x := strings.Split(scanner.Text(), " ")
+		x[0] = strings.TrimSuffix(x[0], ":")
+		y := make([]int, len(x))
+		for i, e := range x {
+			v, err := strconv.Atoi(e)
+			if err != nil {
+				log.Fatal(err)
+			}
+			y[i] = v
+		}
+
+		var a, b []int
+		a = append(a, y[1])
+		b = append(b, y[2:]...)
+
+		c := getCombinations(a, b)
+
+		if slices.Contains(c, y[0]) {
+			res += y[0]
+		}
+	}
+
+	return res
 }
 
 func checkValid(a []int) bool {
@@ -89,5 +121,27 @@ func getDepth(tree []int, index int) int {
 		return 0
 	}
 	return 1 + getDepth(tree, (index-1)/2)
+
+}
+
+func getCombinations(a, b []int) []int {
+	if len(b) == 0 {
+		return a
+	}
+
+	var values []int
+
+	for i := range a {
+		values = append(values, a[i]+b[0])
+		values = append(values, a[i]*b[0])
+		left, right := strconv.Itoa(a[i]), strconv.Itoa(b[0])
+		concat, err := strconv.Atoi(left + right)
+		if err != nil {
+			log.Fatal(err)
+		}
+		values = append(values, concat)
+	}
+
+	return getCombinations(values, b[1:])
 
 }
