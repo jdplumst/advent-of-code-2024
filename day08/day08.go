@@ -135,7 +135,196 @@ func part1(input string) int {
 }
 
 func part2(input string) int {
-	return 1
+	file, err := os.Open(input)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	antennas := map[string][]Coordinate{}
+
+	width := 0
+	height := 0
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		c := strings.Split(scanner.Text(), "")
+		width = len(c)
+		for i := range c {
+			if c[i] != "." {
+				index := c[i]
+				antennas[index] = append(antennas[index], Coordinate{i, height})
+			}
+		}
+		height++
+	}
+
+	antinodes := make([]Coordinate, 0)
+	for _, v := range antennas {
+		for i := 0; i < len(v); i++ {
+			for j := i + 1; j < len(v); j++ {
+				new_X := abs(v[i].X, v[j].X)
+				new_Y := abs(v[i].Y, v[j].Y)
+
+				// i top-left, j bot-right
+				if v[i].X <= v[j].X && v[i].Y <= v[j].Y {
+					first_X := v[i].X - new_X
+					first_Y := v[i].Y - new_Y
+					for {
+						if first_X >= 0 && first_X < width &&
+							first_Y >= 0 && first_Y < height &&
+							!checkExists(antinodes, first_X, first_Y) {
+							antinodes = append(antinodes, Coordinate{first_X, first_Y})
+							first_X -= new_X
+							first_Y -= new_Y
+						} else if first_X < 0 || first_X >= width ||
+							first_Y < 0 || first_Y >= height {
+							break
+						} else {
+							first_X -= new_X
+							first_Y -= new_Y
+						}
+					}
+					second_X := v[i].X
+					second_Y := v[i].Y
+					for {
+						if second_X >= 0 && second_X < width &&
+							second_Y >= 0 && second_Y < height &&
+							!checkExists(antinodes, second_X, second_Y) {
+							antinodes = append(antinodes, Coordinate{second_X, second_Y})
+							second_X += new_X
+							second_Y += new_Y
+						} else if second_X < 0 || second_X >= width ||
+							second_Y < 0 || second_Y >= height {
+							break
+						} else {
+							second_X += new_X
+							second_Y += new_Y
+						}
+					}
+					// i top-right, j bot-left
+				} else if v[i].X >= v[j].X && v[i].Y <= v[j].Y {
+					first_X := v[i].X + new_X
+					first_Y := v[i].Y - new_Y
+					for {
+						if first_X >= 0 && first_X < width &&
+							first_Y >= 0 && first_Y < height &&
+							!checkExists(antinodes, first_X, first_Y) {
+							antinodes = append(antinodes, Coordinate{first_X, first_Y})
+							first_X += new_X
+							first_Y -= new_Y
+						} else if first_X < 0 || first_X >= width ||
+							first_Y < 0 || first_Y >= height {
+							break
+						} else {
+							first_X += new_X
+							first_Y -= new_Y
+						}
+
+					}
+					second_X := v[i].X
+					second_Y := v[i].Y
+					for {
+						if second_X >= 0 && second_X < width &&
+							second_Y >= 0 && second_Y < height &&
+							!checkExists(antinodes, second_X, second_Y) {
+							antinodes = append(antinodes, Coordinate{second_X, second_Y})
+							second_X -= new_X
+							second_Y += new_Y
+						} else if second_X < 0 || second_X > width ||
+							second_Y < 0 || second_Y >= height {
+							break
+						} else {
+							second_X -= new_X
+							second_Y += new_Y
+						}
+					}
+					// i bot-left, j top-right
+				} else if v[i].X <= v[j].X && v[i].Y >= v[j].Y {
+					first_X := v[i].X - new_X
+					first_Y := v[i].Y + new_Y
+					for {
+						if first_X >= 0 && first_X < width &&
+							first_Y >= 0 && first_Y < height &&
+							!checkExists(antinodes, first_X, first_Y) {
+							antinodes = append(antinodes, Coordinate{first_X, first_Y})
+							first_X -= new_X
+							first_Y += new_Y
+						} else if first_X < 0 || first_X >= width ||
+							first_Y < 0 || first_Y >= height {
+							break
+						} else {
+							first_X -= new_X
+							first_Y += new_Y
+						}
+					}
+					second_X := v[i].X
+					second_Y := v[i].Y
+					for {
+						if second_X >= 0 && second_X < width &&
+							second_Y >= 0 && second_Y < height &&
+							!checkExists(antinodes, second_X, second_Y) {
+							antinodes = append(antinodes, Coordinate{second_X, second_Y})
+							second_X += new_X
+							second_Y -= new_Y
+						} else if second_X < 0 || second_X >= width ||
+							second_Y < 0 || second_Y >= height {
+							break
+						} else {
+							second_X += new_X
+							second_Y -= new_Y
+						}
+					}
+					// i bot-right, j top-left
+				} else if v[i].X >= v[j].X && v[i].Y >= v[j].Y {
+					first_X := v[i].X + new_X
+					first_Y := v[i].Y + new_Y
+					for {
+						if first_X >= 0 && first_X < width &&
+							first_Y >= 0 && first_Y < height &&
+							!checkExists(antinodes, first_X, first_Y) {
+							antinodes = append(antinodes, Coordinate{first_X, first_Y})
+							first_X += new_X
+							first_Y += new_Y
+						} else if first_X < 0 || first_X >= width ||
+							first_Y < 0 || first_Y >= height {
+							break
+						} else {
+							first_X += new_X
+							first_Y += new_Y
+						}
+					}
+					second_X := v[i].X
+					second_Y := v[i].Y
+					for {
+						if second_X >= 0 && second_X < width &&
+							second_Y >= 0 && second_Y < height &&
+							!checkExists(antinodes, second_X, second_Y) {
+							antinodes = append(antinodes, Coordinate{second_X, second_Y})
+							second_X -= new_X
+							second_Y -= new_Y
+						} else if second_X < 0 || second_X >= width ||
+							second_Y < 0 || second_Y >= height {
+							break
+						} else {
+							second_X -= new_X
+							second_Y -= new_Y
+						}
+					}
+				}
+
+				if !checkExists(antinodes, v[i].X, v[i].Y) {
+					antinodes = append(antinodes, Coordinate{v[i].X, v[i].Y})
+				}
+				if !checkExists(antinodes, v[j].X, v[j].Y) {
+					antinodes = append(antinodes, Coordinate{v[j].X, v[j].Y})
+				}
+
+			}
+		}
+	}
+
+	return len(antinodes)
 }
 
 func abs(a, b int) int {
@@ -154,6 +343,3 @@ func checkExists(a []Coordinate, x, y int) bool {
 	}
 	return false
 }
-
-// 307 too high
-// 300 too low
