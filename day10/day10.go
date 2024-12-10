@@ -56,7 +56,31 @@ func part1(input string) int {
 }
 
 func part2(input string) int {
-	return 1
+	file, err := os.Open(input)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	res := 0
+
+	topMap := make([][]string, 0)
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		x := strings.Split(scanner.Text(), "")
+		topMap = append(topMap, x)
+	}
+
+	for i := 0; i < len(topMap); i++ {
+		for j := 0; j < len(topMap[i]); j++ {
+			if topMap[i][j] == "0" {
+				res += getRating(topMap, 0, i, j)
+			}
+		}
+	}
+
+	return res
 }
 
 func getScore(topMap [][]string, tracked [][]bool, scale, i, j int) int {
@@ -115,4 +139,51 @@ func resetTracked(tracked [][]bool) [][]bool {
 	}
 
 	return tracked
+}
+
+func getRating(topMap [][]string, scale, i, j int) int {
+	score := 0
+
+	if scale == 9 {
+		return 1
+	}
+
+	if i > 0 {
+		top, err := strconv.Atoi(topMap[i-1][j])
+		if err != nil {
+			log.Fatal(err)
+		}
+		if top == scale+1 {
+			score += getRating(topMap, top, i-1, j)
+		}
+	}
+	if i < len(topMap)-1 {
+		bot, err := strconv.Atoi(topMap[i+1][j])
+		if err != nil {
+			log.Fatal(err)
+		}
+		if bot == scale+1 {
+			score += getRating(topMap, bot, i+1, j)
+		}
+	}
+	if j > 0 {
+		left, err := strconv.Atoi(topMap[i][j-1])
+		if err != nil {
+			log.Fatal(err)
+		}
+		if left == scale+1 {
+			score += getRating(topMap, left, i, j-1)
+		}
+	}
+	if j < len(topMap[i])-1 {
+		right, err := strconv.Atoi(topMap[i][j+1])
+		if err != nil {
+			log.Fatal(err)
+		}
+		if right == scale+1 {
+			score += getRating(topMap, right, i, j+1)
+		}
+	}
+
+	return score
 }
