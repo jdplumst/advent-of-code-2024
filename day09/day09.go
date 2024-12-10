@@ -53,7 +53,34 @@ func part1(input string) int {
 }
 
 func part2(input string) int {
-	return 1
+	file, err := os.Open(input)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	blocks := make([]string, 0)
+
+	file_block := true
+
+	id := 0
+
+	scanner := bufio.NewScanner(file)
+	scanner.Split(bufio.ScanBytes)
+	for scanner.Scan() {
+		if scanner.Text() == "\n" {
+			continue
+		}
+		blocks, file_block = createBlocks(blocks, scanner.Text(), id, file_block)
+
+		if !file_block {
+			id++
+		}
+	}
+
+	blocks = moveBlocksUpdated(blocks)
+
+	return getChecksum(blocks)
 }
 
 func createBlocks(blocks []string, c string, id int, f bool) ([]string, bool) {
@@ -105,6 +132,9 @@ func getChecksum(blocks []string) int {
 	checksum := 0
 
 	for i, e := range blocks {
+		if e == "." {
+			continue
+		}
 		id, err := strconv.Atoi(e)
 		if err != nil {
 			log.Fatal(err)
@@ -113,4 +143,56 @@ func getChecksum(blocks []string) int {
 	}
 
 	return checksum
+}
+
+func moveBlocksUpdated(blocks []string) []string {
+	curr := ""
+	s := 0
+	for i := len(blocks) - 1; i >= 0; i-- {
+		if blocks[i] == "." && curr == "" {
+			continue
+		} else if blocks[i] == "." && curr != "" {
+			blocks = moveFile(blocks, s, curr, i+1)
+			curr = ""
+			s = 0
+		} else if curr == "" {
+			curr = blocks[i]
+			s++
+		} else if blocks[i] != curr {
+			blocks = moveFile(blocks, s, curr, i+1)
+			curr = blocks[i]
+			s = 1
+		} else {
+			s++
+		}
+	}
+
+	return blocks
+}
+
+func moveFile(blocks []string, s int, f string, index int) []string {
+	curr := 0
+	for i := 0; i < len(blocks); i++ {
+		if i >= index {
+			break
+		}
+		if blocks[i] == "." {
+			curr++
+		} else {
+			curr = 0
+		}
+
+		if curr >= s {
+			for {
+				if s <= 0 {
+					break
+				}
+				blocks[i-s+1] = f
+				blocks[index+s-1] = "."
+				s--
+			}
+		}
+	}
+
+	return blocks
 }
