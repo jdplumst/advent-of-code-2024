@@ -20,3 +20,22 @@ func TestPart1(t *testing.T) {
 		})
 	}
 }
+
+func TestPart2(t *testing.T) {
+	cases := []struct {
+		Description string
+		Input       string
+		Want        int
+	}{
+		{"given", "input_test.txt", 65601038650482},
+	}
+
+	for _, test := range cases {
+		t.Run(test.Description, func(t *testing.T) {
+			got := part2(test.Input)
+			if got != test.Want {
+				t.Errorf("got %v, want %v", got, test.Want)
+			}
+		})
+	}
+}

@@ -43,8 +43,34 @@ func part1(input string) int {
 	return len(rocks)
 }
 
+type RockBlinks struct {
+	Rock   string
+	Blinks int
+}
+
 func part2(input string) int {
-	return 1
+	file, err := os.Open(input)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	res := 0
+
+	rocks := make([]string, 0)
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		rocks = strings.Split(scanner.Text(), " ")
+	}
+
+	memo := map[RockBlinks]int{}
+
+	for i := range rocks {
+		res += blinkWithRecursion(rocks[i], 75, memo)
+	}
+
+	return res
 }
 
 func blink(rocks []string) []string {
@@ -71,4 +97,38 @@ func blink(rocks []string) []string {
 	}
 
 	return newRocks
+}
+
+func blinkWithRecursion(rock string, blinks int, memo map[RockBlinks]int) int {
+	if blinks == 0 {
+		return 1
+	}
+
+	cached := memo[RockBlinks{Rock: rock, Blinks: blinks}]
+	if cached != 0 {
+		return cached
+	}
+
+	sum := 0
+
+	if rock == "0" {
+		sum += blinkWithRecursion("1", blinks-1, memo)
+	} else if len(rock)%2 == 0 {
+		right, err := strconv.Atoi(rock[len(rock)/2:])
+		if err != nil {
+			log.Fatal(err)
+		}
+		sum += blinkWithRecursion(rock[:len(rock)/2], blinks-1, memo) + blinkWithRecursion(strconv.Itoa(right), blinks-1, memo)
+	} else {
+		num, err := strconv.Atoi(rock)
+		if err != nil {
+			log.Fatal(err)
+		}
+		num *= 2024
+		sum += blinkWithRecursion(strconv.Itoa(num), blinks-1, memo)
+	}
+
+	memo[RockBlinks{Rock: rock, Blinks: blinks}] = sum
+
+	return sum
 }
